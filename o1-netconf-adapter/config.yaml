@@ -1,0 +1,36 @@
+# config.yaml — O1/NETCONF Adapter configuration
+#
+# All connection parameters for YOUR existing OCUDU deployment live here.
+# Nothing in the code is hardcoded — change this file to point at a
+# different gNB, port, or output location without touching any Python.
+
+ocudu:
+  websocket_url: "ws://127.0.0.1:8001"   # your real gNB's remote_control server
+  reconnect_interval_seconds: 5
+
+reporting:
+  interval_seconds: 10   # how often KPIState is drained and a new
+                          # snapshot is computed/exported (the O1
+                          # "granularity period")
+
+pm_xml:
+  output_dir: "/tmp/o1_pm_files"
+  max_files: 500          # oldest files deleted beyond this count
+
+netconf:
+  bind_addr: "127.0.0.1"
+  port: 8830               # non-privileged port (real O1 NETCONF uses
+                            # 830, which needs root on Linux)
+  username: "admin"
+  password: "admin"        # change this if exposing beyond localhost
+
+identity:
+  managed_element: "gNB-1"
+  gnb_cu_cp_function: "1"
+  nr_cell_id: "1"
+  sender_name: "OCUDU-adapter"
+
+logging:
+  level: "INFO"           # DEBUG shows every parsed field + raw message
+                           # summaries; useful when OCUDU's schema changes
+                           # and you need to see exactly what arrived
