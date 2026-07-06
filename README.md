@@ -2,6 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED) ![InfluxDB](https://img.shields.io/badge/InfluxDB-2.x-22ADF6) ![Grafana](https://img.shields.io/badge/Grafana-10.x-F46800) ![Open5GS](https://img.shields.io/badge/Open5GS-5G_Core-success) ![O-RAN](https://img.shields.io/badge/O--RAN-Learning_Project-purple) ![NETCONF](https://img.shields.io/badge/NETCONF-Implemented-green) ![License](https://img.shields.io/badge/License-MIT-yellow)
 
+![Platform Dashboard](pipline)
 
 </p><p align="center">
 A complete end-to-end telecom observability platform that collects live KPIs from a real OCUDU gNB, exposes them through O1-inspired interfaces, stores them in InfluxDB, visualizes them in Grafana, and applies Machine Learning for anomaly detection.
