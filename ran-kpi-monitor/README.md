@@ -1,4 +1,4 @@
-# RAN KPI Monitor — Weeks 1–2: InfluxDB + Grafana Stack
+# RAN KPI Monitor — steps 1–2: InfluxDB + Grafana Stack
 
 This stands up the storage + visualization foundation for the project:
 **InfluxDB 2.7** (time-series storage) + **Grafana 10** (dashboards), pre-wired
@@ -77,7 +77,7 @@ ran-kpi-monitor/
         └── dashboards/dashboards.yml     # auto-loads dashboards dropped here later
 ```
 
-## What's next (Weeks 3–4)
+## What's next (steps 3–4)
 
 Once this is up and you can log into both UIs, the next step is writing the
 Python KPI collector that parses srsRAN O1 PM XML files and writes points
