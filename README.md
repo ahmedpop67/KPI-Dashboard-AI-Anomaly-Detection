@@ -77,7 +77,7 @@ ran-kpi-monitor/
         └── dashboards/dashboards.yml     # auto-loads dashboards dropped here later
 ```
 
-## What's next (Weeks 3–4)
+## What's next (steps 3–4)
 
 Once this is up and you can log into both UIs, the next step is writing the
 Python KPI collector that parses srsRAN O1 PM XML files and writes points
