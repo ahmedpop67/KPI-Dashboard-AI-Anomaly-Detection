@@ -116,7 +116,7 @@ the "Anomaly Alerts" panel above.
 
 
 
-# RAN KPI Anomaly Detection (Weeks 5-8)
+# RAN KPI Anomaly Detection 
 
 Two complementary anomaly detectors reading from InfluxDB (written by the
 Week 3-4 collector) and writing flags back into InfluxDB for Grafana to
