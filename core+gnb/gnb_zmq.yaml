@@ -1,0 +1,83 @@
+# gnb_zmq.yaml — OCUDU gNB config using ZeroMQ instead of real radio hardware.
+#
+# IMPORTANT: the exact metrics.* key names below have changed between
+# srsRAN Project releases (e.g. "enable_json" vs "enable_json_metrics" in
+# older versions). Before running, check:
+#   ~/ocudu/build/apps/gnb/gnb --help
+# or the reference config shipped in the repo under configs/, and adjust
+# the `metrics:` section below to match your build if needed.
+
+cu_cp:
+  amf:
+    addrs: 172.30.0.10        # IP of the Open5GS AMF container/host
+    port: 38412
+    bind_addrs: 172.30.0.1    # host's gateway IP on the docker_open5gs_default bridge
+    supported_tracking_areas:
+      - tac: 7
+        plmn_list:
+          - plmn: "00101"       # must match Open5GS PLMN (MCC=001, MNC=01)
+            tai_slice_support_list:
+              - sst: 1
+  inactivity_timer: 7200
+
+cu_up:
+  ngu:
+    socket:
+      - bind_addr: 172.30.0.1  # host's gateway IP on the docker_open5gs_default bridge
+
+ru_sdr:
+  device_driver: zmq
+  device_args: tx_port=tcp://127.0.0.1:2000,rx_port=tcp://127.0.0.1:2001,base_srate=23.04e6
+  srate: 23.04
+  tx_gain: 0    # ZMQ requires gain <= 0.0 dB — no real RF amplifier to configure
+  rx_gain: 0
+
+cell_cfg:
+  dl_arfcn: 368500
+  band: 3
+  channel_bandwidth_MHz: 20
+  common_scs: 15
+  plmn: "00101"
+  tac: 7
+  pdsch:
+    mcs_table: qam64      # qam256 (the default) conflicts with fallback DCI
+                          # format in SearchSpace#2 — qam64 matches the
+                          # srsUE-compatible reference config
+  pusch:
+    mcs_table: qam64      # same conflict, uplink side
+  pdcch:
+    common:
+      ss0_index: 0
+      coreset0_index: 12
+    dedicated:
+      ss2_type: common
+      dci_format_0_1_and_1_1: false
+  prach:
+    prach_config_index: 1
+
+# --- KPI export for our monitoring pipeline ---
+# JSON metrics in this build are served over the Remote Control HTTP server,
+# NOT printed to stdout — enable_json requires remote_control to be enabled,
+# or the gNB refuses to start with "Invalid remote server gateway" errors.
+metrics:
+  enable_json: true
+  enable_log: false
+  autostart_stdout_metrics: true
+  layers:
+    enable_sched: true      # PRB utilization, CQI/MCS
+    enable_sched_ue: true   # per-UE scheduler detail
+    enable_mac: true        # BLER (HARQ ACK/NACK counts)
+    enable_rrc: true        # mobility / handover events
+  periodicity:
+    cu_cp_report_period: 1000
+    du_report_period: 1000
+
+remote_control:
+  enabled: true
+  bind_addr: 127.0.0.1
+  port: 8001
+
+log:
+  filename: /tmp/ocudu_gnb.log
+  all_level: info
+  phy_level: warning
