@@ -1,0 +1,117 @@
+{
+  "title": "RAN KPI Monitoring",
+  "uid": "ran-kpi-monitoring",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-30m", "to": "now" },
+  "tags": ["ran", "oran", "kpi"],
+  "panels": [
+    {
+      "id": 1,
+      "title": "CQI (Average)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "influxdb", "uid": "influxdb-ran" },
+      "fieldConfig": {
+        "defaults": { "unit": "short", "min": 0, "max": 15 },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"ran_kpis\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ran_kpis\")\n  |> filter(fn: (r) => r._field == \"cqi_avg\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "DL / UL BLER (%)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "influxdb", "uid": "influxdb-ran" },
+      "fieldConfig": {
+        "defaults": { "unit": "percent", "min": 0 },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"ran_kpis\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ran_kpis\")\n  |> filter(fn: (r) => r._field == \"dl_bler_percent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        },
+        {
+          "query": "from(bucket: \"ran_kpis\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ran_kpis\")\n  |> filter(fn: (r) => r._field == \"ul_bler_percent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "PRB Utilization (Proxy, %)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "influxdb", "uid": "influxdb-ran" },
+      "description": "APPROXIMATED — this is a scheduling-activity proxy, not a true PRB-count counter. See project README for details.",
+      "fieldConfig": {
+        "defaults": { "unit": "percent", "min": 0, "max": 100 },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"ran_kpis\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ran_kpis\")\n  |> filter(fn: (r) => r._field == \"prb_utilization_percent_proxy\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "HO Success Rate (%)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "influxdb", "uid": "influxdb-ran" },
+      "fieldConfig": {
+        "defaults": { "unit": "percent", "min": 0, "max": 100 },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"ran_kpis\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ran_kpis\")\n  |> filter(fn: (r) => r._field == \"ho_success_rate_percent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "RSRP Proxy (PUSCH SNR, dB)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "datasource": { "type": "influxdb", "uid": "influxdb-ran" },
+      "description": "NOT REAL RSRP — this is uplink PUSCH SNR, used as a proxy since true RSRP requires UE measurement reports not exposed by OCUDU's metrics stream. See project README.",
+      "fieldConfig": {
+        "defaults": { "unit": "dB" },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"ran_kpis\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ran_kpis\")\n  |> filter(fn: (r) => r._field == \"rsrp_proxy_pusch_snr_db\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Anomaly Alerts",
+      "type": "state-timeline",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "datasource": { "type": "influxdb", "uid": "influxdb-ran" },
+      "description": "Populated once the Isolation Forest / LSTM Autoencoder anomaly detectors are running and writing to the ran_kpi_anomalies measurement.",
+      "targets": [
+        {
+          "query": "from(bucket: \"ran_kpis\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ran_kpi_anomalies\")\n  |> filter(fn: (r) => r._field == \"is_anomaly\")",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}

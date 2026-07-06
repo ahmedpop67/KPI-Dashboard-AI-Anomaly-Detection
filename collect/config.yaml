@@ -1,0 +1,21 @@
+# config.yaml — ML anomaly detection configuration
+netconf:
+  bind_addr: "127.0.0.1"
+  port: 8830               # non-privileged port (real O1 NETCONF uses
+                            # 830, which needs root on Linux)
+  username: "admin"
+  password: "admin"        # change this if exposing beyond localhost
+
+
+influxdb:
+  url: "http://localhost:8086"
+  token: "ran-kpi-super-secret-admin-token"   # matches your Weeks 1-2 .env
+  org: "ran-monitoring"
+  bucket: "ran_kpis"
+  poll_interval_seconds: 10
+
+identity:
+  managed_element: "gNB-1"
+
+logging:
+  level: "INFO"
