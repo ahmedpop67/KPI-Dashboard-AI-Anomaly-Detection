@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: ran-influxdb
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN}
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: ran-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USERNAME}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      # Lets the provisioned InfluxDB datasource use env vars below
+      GF_INFLUXDB_ORG: ${INFLUXDB_ORG}
+      GF_INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
+      GF_INFLUXDB_TOKEN: ${INFLUXDB_ADMIN_TOKEN}
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      influxdb:
+        condition: service_healthy
+
+networks:
+  default:
+    name: ran-kpi-network
