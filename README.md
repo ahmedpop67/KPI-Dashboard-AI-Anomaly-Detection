@@ -1,4 +1,4 @@
-# RAN KPI Monitor — Weeks 1–2: InfluxDB + Grafana Stack
+# RAN KPI Monitor — steps 1–2: InfluxDB + Grafana Stack
 
 This stands up the storage + visualization foundation for the project:
 **InfluxDB 2.7** (time-series storage) + **Grafana 10** (dashboards), pre-wired
