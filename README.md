@@ -66,6 +66,7 @@ LSTM --> ALERTS
 ---
 
 🔄 End-to-End Data Flow
+![Platform Dashboard](ran_kpi_project_architecture.png)
 
 "Workflow" (docs/images/project-workflow.png)
 
